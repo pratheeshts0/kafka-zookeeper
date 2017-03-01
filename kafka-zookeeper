@@ -1,0 +1,100 @@
+ping .sh
+
+#!/bin/bash
+until (ping -c1 172.17.0.2 > /dev/null)
+do
+  echo "waiting for 1"
+done 
+echo "1"
+
+until (ping -c1 172.17.0.3 > /dev/null)
+do
+  echo "waiting for 2"
+done
+echo "2"
+
+until (ping -c1 172.17.0.4 > /dev/null)
+do
+  echo "waiting for 3"
+done
+echo "3"
+
+
+#IPADDRESS=`ip -4 addr show scope global dev eth0 | grep inet | awk '{print $2}' | cut -d / -f 1`
+echo "$MYID" > /var/lib/zookeeper/data/myid
+echo "server.$MYID1=$IPADDRESS1:2888:3888" >> /opt/zookeeper-3.4.6/conf/zoo.cfg
+echo "server.$MYID2=$IPADDRESS2:2888:3888" >> /opt/zookeeper-3.4.6/conf/zoo.cfg
+echo "server.$MYID3=$IPADDRESS3:2888:3888" >> /opt/zookeeper-3.4.6/conf/zoo.cfg
+
+/opt/zookeeper-3.4.6/bin/zkServer.sh restart
+
+
+
+
+
+give the script path  in /etc/bash.bashrc   
+
+
+
+
+
+
+kAFKA SCRIPT 
+
+
+#!/bin/bash
+sed -i "s/broker.id=.*/broker.id=$BROKERID/g" /opt/kafka/config/server.properties 
+sed -i "s/zookeeper.connect=.*/zookeeper.connect=$ZOOKEEPERIP/g" /opt/kafka/config/server.properties 
+cd /opt/kafka
+./bin/kafka-server-start.sh -daemon config/server.properties 
+
+
+
+
+give the script path  in /etc/bash.bashrc
+
+
+
+
+
+for running zookeeper 
+ 
+
+all image repository on docker hub pratheeshts0/kafka-zookeeper
+
+
+docker run -it -e MYID="1" -e MYID1="1" -e IPADDRESS1="172.17.0.2" -e MYID2="2" -e IPADDRESS2="172.17.0.3" -e MYID3="3" -e IPADDRESS3="172.17.0.4" chetanpachare/bizruntime:zookeeper /bin/bash
+
+
+docker run -it -e MYID="2" -e MYID1="1" -e IPADDRESS1="172.17.0.2" -e MYID2="2" -e IPADDRESS2="172.17.0.3" -e MYID3="3" -e IPADDRESS3="172.17.0.4" chetanpachare/bizruntime:zookeeper /bin/bash
+
+docker run -it -e MYID="3" -e MYID1="1" -e IPADDRESS1="172.17.0.2" -e MYID2="2" -e IPADDRESS2="172.17.0.3" -e MYID3="3" -e IPADDRESS3="172.17.0.4" chetanpachare/bizruntime:zookeeper /bin/bash
+
+
+
+for running kafka
+
+
+   docker run -it -h kafka1 -e BROKERID='0' -e ZOOKEEPERIP='172.17.0.2:2181,172.17.0.3:2181,172.17.0.4:2181' chetanpachare/bizruntime:kafka /bin/bash
+
+ docker run -it -h kafka2 -e BROKERID='1' -e ZOOKEEPERIP='172.17.0.2:2181,172.17.0.3:2181,172.17.0.4:2181' chetanpachare/bizruntime:kafka /bin/bash
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
